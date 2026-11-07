@@ -17,3 +17,5 @@
 ## English
 
 Install the repository `https://github.com/fwerkor/ha-v2raya` in the Home Assistant Add-on Store, start **v2rayA Proxy**, open `http://<HA_IP>:2017`, configure a server and enable **LAN Sharing**. Use SOCKS5 on 20170, HTTP on 20171, or routed HTTP on 20172. Limit access to a trusted LAN: the proxy ports do not have authentication by default. Supports amd64 and aarch64. Installs a prebuilt image from GHCR instead of building locally from Docker Hub.
+
+App artwork: original v2rayA icon from [v2rayA upstream](https://github.com/v2rayA/v2rayA/blob/main/gui/public/static/v2raya-icon.svg), rasterized for Home Assistant.

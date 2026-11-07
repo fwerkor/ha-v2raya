@@ -2,6 +2,7 @@
 
 ## 0.1.1
 
+- Add the upstream v2rayA icon and logo for the Home Assistant app store.
 - Publish a pre-built multi-architecture image on GHCR so Home Assistant does not have to build from Docker Hub.
 - Use a single multi-architecture image for amd64 and aarch64.
 
