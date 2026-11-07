@@ -1,0 +1,25 @@
+name: v2rayA Proxy
+version: "0.1.0"
+slug: v2raya_proxy
+description: v2rayA proxy client with LAN-accessible SOCKS5 and HTTP ports
+url: https://github.com/fwerkor/ha-v2raya-addon
+arch:
+  - amd64
+  - aarch64
+startup: services
+boot: auto
+init: false
+panel_icon: mdi:shield-lock-outline
+webui: http://[HOST]:[PORT:2017]
+ports:
+  2017/tcp: 2017
+  20170/tcp: 20170
+  20171/tcp: 20171
+  20172/tcp: 20172
+ports_description:
+  2017/tcp: v2rayA administration interface (protect with a password)
+  20170/tcp: SOCKS5 proxy (enable LAN Sharing in v2rayA)
+  20171/tcp: HTTP proxy (enable LAN Sharing in v2rayA)
+  20172/tcp: HTTP proxy with routing rules (enable LAN Sharing)
+options: {}
+schema: {}
