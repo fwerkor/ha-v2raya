@@ -18,7 +18,7 @@ jobs:
           python-version: '3.12'
       - run: python -m pip install pyyaml
       - run: python tests/validate.py
-      - run: sh -n v2raya/run.sh
+      - run: sh -n v2raya/run.sh scripts/install-local-cn.sh
 
   build:
     needs: validate
@@ -57,7 +57,8 @@ jobs:
         run: docker rm -f ha-v2raya-test || true
 
   publish:
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    # Keep released image tags immutable; invoke publication only for a new version.
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
     needs: [validate, build, smoke]
     runs-on: ubuntu-latest
     permissions:

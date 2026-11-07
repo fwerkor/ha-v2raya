@@ -1,4 +1,5 @@
 from pathlib import Path
+import hashlib
 import struct
 
 import yaml
@@ -23,5 +24,23 @@ for filename, expected_size in (("icon.png", (128, 128)), ("logo.png", (250, 100
     assert content.startswith(b"\x89PNG\r\n\x1a\n")
     assert content[12:16] == b"IHDR"
     assert struct.unpack(">II", content[16:24]) == expected_size
+
+cn = yaml.safe_load((root / "v2raya_cn/config.yaml").read_text())
+assert cn["slug"] == "v2raya_proxy_cn"
+assert cn["version"] == addon["version"]
+assert cn["image"] == "ghcr.dockerproxy.net/fwerkor/ha-v2raya"
+assert cn["ports"] == addon["ports"]
+assert cn["arch"] == addon["arch"]
+assert cn["init"] is False
+assert not cn.get("privileged") and not cn.get("host_network")
+for filename, expected_size in (("icon.png", (128, 128)), ("logo.png", (250, 100))):
+    content = (root / "v2raya_cn" / filename).read_bytes()
+    assert content.startswith(b"\x89PNG\r\n\x1a\n")
+    assert struct.unpack(">II", content[16:24]) == expected_size
+
+installer = (root / "scripts/install-local-cn.sh").read_text()
+for filename in ("config.yaml", "DOCS.md", "CHANGELOG.md", "icon.png", "logo.png"):
+    sha256 = hashlib.sha256((root / "v2raya_cn" / filename).read_bytes()).hexdigest()
+    assert f"{filename}) expected={sha256}" in installer, f"Stale installer hash: {filename}"
 
 print("Home Assistant add-on config OK")

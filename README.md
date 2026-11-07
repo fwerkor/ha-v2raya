@@ -19,3 +19,19 @@
 Install the repository `https://github.com/fwerkor/ha-v2raya` in the Home Assistant Add-on Store, start **v2rayA Proxy**, open `http://<HA_IP>:2017`, configure a server and enable **LAN Sharing**. Use SOCKS5 on 20170, HTTP on 20171, or routed HTTP on 20172. Limit access to a trusted LAN: the proxy ports do not have authentication by default. Supports amd64 and aarch64. Installs a prebuilt image from GHCR instead of building locally from Docker Hub.
 
 App artwork: original v2rayA icon from [v2rayA upstream](https://github.com/v2rayA/v2rayA/blob/main/gui/public/static/v2raya-icon.svg), rasterized for Home Assistant.
+
+## 中国大陆网络备用安装 / CN fallback
+
+如果 HAOS 日志显示 GitHub `git ls-remote` TLS/EOF 错误，Supervisor 无法更新其仓库缓存，仍可能使用旧版 Dockerfile 并访问 Docker Hub。此时刷新仓库并不能解决所有网络问题。原版仍以官方 GHCR 为首选，另提供 **v2rayA Proxy (CN Mirror)**，通过 `ghcr.dockerproxy.net` 拉取相同的预构建镜像。镜像站为第三方服务，使用时需自行评估其可用性和信任风险。
+
+**如果 GitHub 仓库不可访问**，在 Home Assistant **Terminal & SSH** 中执行（需要支持 `/local_apps` 或 `/addons` 的终端；脚本不会修改系统 Docker/网络配置）：
+
+```sh
+curl -fL --retry 2 --connect-timeout 5 -o /tmp/ha-v2raya-install.sh \
+  https://cdn.jsdelivr.net/gh/fwerkor/ha-v2raya@main/scripts/install-local-cn.sh
+sh /tmp/ha-v2raya-install.sh
+```
+
+脚本自动检查官方 GHCR 和 CN 镜像站，校验 **v0.1.1 OCI index SHA-256** 以及 amd64/arm64 架构；然后从 jsDelivr、Fastly、JSDMirror、GitHub Raw 依次获取加载项文件，生成本地加载项。任何来源都失败时中止，不会继续使用错误的镜像。安装后在商店的本地应用（Local apps）中选择 **v2rayA Proxy (CN Mirror)**。如果要强制选国内镜像站，运行 `HA_V2RAYA_REGISTRY=cn sh /tmp/ha-v2raya-install.sh`。
+
+这个切换发生在安装脚本执行阶段；**Home Assistant Supervisor 本身不会在镜像拉取失败后自动换站**。不要同时安装两个变体（端口冲突）。v0.1.1 校验值是固定的，以后升级版本须更新脚本的校验值。
