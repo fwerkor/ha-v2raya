@@ -1,8 +1,7 @@
 # Upstream image bundles v2rayA, v2raya_core and routing rule assets.
 FROM mzz2017/v2raya:v2.5.13
 
-ARG BUILD_VERSION=0.1.0
-ARG BUILD_ARCH=amd64
+ARG BUILD_VERSION=0.1.1
 RUN apk add --no-cache ca-certificates
 COPY run.sh /usr/local/bin/ha-v2raya-start
 RUN chmod 0755 /usr/local/bin/ha-v2raya-start
@@ -12,7 +11,7 @@ ENV V2RAYA_ADDRESS=0.0.0.0:2017 \
 EXPOSE 2017/tcp 20170/tcp 20171/tcp 20172/tcp
 LABEL io.hass.version="${BUILD_VERSION}" \
       io.hass.type="app" \
-      io.hass.arch="${BUILD_ARCH}" \
+      io.hass.arch="aarch64|amd64" \
       org.opencontainers.image.title="v2rayA Home Assistant Add-on" \
       org.opencontainers.image.source="https://github.com/fwerkor/ha-v2raya"
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s \

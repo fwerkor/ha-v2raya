@@ -2,7 +2,7 @@
 
 ## 安装与使用
 
-为 **Home Assistant OS / Supervised** 提供 v2rayA 代理插件，支持 `amd64` 和 `aarch64`。配置保存在 `/data/v2raya`，不修改 HAOS 主机网络。
+为 **Home Assistant OS / Supervised** 提供 v2rayA 代理插件，支持 `amd64` 和 `aarch64`。配置保存在 `/data/v2raya`，不修改 HAOS 主机网络。插件使用预构建的 `ghcr.io/fwerkor/ha-v2raya:0.1.1` 镜像，安装时无需在 HAOS 本机从 Docker Hub 构建。
 
 1. 在 HA **设置 → 加载项 → 加载项商店 → 仓库** 添加 `https://github.com/fwerkor/ha-v2raya`。
 2. 安装并启动 **v2rayA Proxy**，打开 Web UI 或访问 `http://<HA_IP>:2017`，设置管理员密码。
@@ -16,4 +16,4 @@
 
 ## English
 
-Install the repository `https://github.com/fwerkor/ha-v2raya` in the Home Assistant Add-on Store, start **v2rayA Proxy**, open `http://<HA_IP>:2017`, configure a server and enable **LAN Sharing**. Use SOCKS5 on 20170, HTTP on 20171, or routed HTTP on 20172. Limit access to a trusted LAN: the proxy ports do not have authentication by default. Supports amd64 and aarch64.
+Install the repository `https://github.com/fwerkor/ha-v2raya` in the Home Assistant Add-on Store, start **v2rayA Proxy**, open `http://<HA_IP>:2017`, configure a server and enable **LAN Sharing**. Use SOCKS5 on 20170, HTTP on 20171, or routed HTTP on 20172. Limit access to a trusted LAN: the proxy ports do not have authentication by default. Supports amd64 and aarch64. Installs a prebuilt image from GHCR instead of building locally from Docker Hub.

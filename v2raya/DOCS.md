@@ -1,6 +1,6 @@
 # v2rayA Proxy
 
-Run v2rayA on Home Assistant OS and share HTTP/SOCKS5 proxy services on a trusted LAN. This add-on uses isolated container networking, never transparent-proxies HAOS itself, and requires no privileged capabilities.
+Run v2rayA on Home Assistant OS and share HTTP/SOCKS5 proxy services on a trusted LAN. This add-on uses isolated container networking, never transparent-proxies HAOS itself, and requires no privileged capabilities. Version 0.1.1 installs a prebuilt multi-architecture image from GHCR and does not require HAOS to contact Docker Hub for local builds.
 
 ## Setup
 
