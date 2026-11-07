@@ -77,7 +77,7 @@ verify_file() {
   expected=''
   case "$filename" in
     config.yaml) expected=6b69d051d2a28b0973bc406eb01472319bec284b97ec0b12fde92189d131aa7b ;;
-    DOCS.md) expected=9b24f541dcade074a9486180d0caaf0de904c47b69201f5e3fbe0ae8e5c002be ;;
+    DOCS.md) expected=47354236bdc7b22586b337a0edda1a20df671d93fbf882d4744eae17b96710e0 ;;
     CHANGELOG.md) expected=7a8fff297148589ce236010564a9c7c84d6906a03ed6e37091088dd674bd782e ;;
     icon.png) expected=34d2e206be831112f32381658174724b89f909e7152f59c1d49b0bd73a18c79b ;;
     logo.png) expected=1674324267b8b0d1707f4c94eeca565a8b07c09d30ef18d55a4b8234b84b037c ;;

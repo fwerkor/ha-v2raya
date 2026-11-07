@@ -35,3 +35,9 @@ sh /tmp/ha-v2raya-install.sh
 脚本自动检查官方 GHCR 和 CN 镜像站，校验 **v0.1.1 OCI index SHA-256** 以及 amd64/arm64 架构；然后从 jsDelivr、Fastly、JSDMirror、GitHub Raw 依次获取加载项文件，生成本地加载项。任何来源都失败时中止，不会继续使用错误的镜像。安装后在商店的本地应用（Local apps）中选择 **v2rayA Proxy (CN Mirror)**。如果要强制选国内镜像站，运行 `HA_V2RAYA_REGISTRY=cn sh /tmp/ha-v2raya-install.sh`。
 
 这个切换发生在安装脚本执行阶段；**Home Assistant Supervisor 本身不会在镜像拉取失败后自动换站**。不要同时安装两个变体（端口冲突）。v0.1.1 校验值是固定的，以后升级版本须更新脚本的校验值。
+
+## HAOS 本机使用代理
+
+HAOS 上能显式使用 v2rayA HTTP/SOCKS5 代理，但 **Supervisor 与 Docker 镜像下载不会自动走代理**。HAOS 的只读系统不支持通过本加载项持久设置 Docker daemon 代理；也不能在加载项尚未启动时解决 Supervisor 下载问题。
+
+已提供只读连接诊断脚本 `scripts/check-host-proxy.sh`，以及详细说明：[HAOS host proxy guide](docs-host-proxy.md)。如确需整机下载可靠地走代理，建议在独立的路由器/网关侧实现，使 HAOS 在插件启动前也能连接外网，并确保局域网网段直连。

@@ -37,3 +37,7 @@ The Network section allows changing or disabling host port mappings. Port `2017`
 ## Data and troubleshooting
 
 State persists under the add-on's `/data/v2raya`. Protect HA backups because subscriptions may contain credentials. If a client cannot connect: check the Network mappings, running upstream node, v2rayA LAN Sharing option, host IP, VLAN/router firewall and add-on logs. v2rayA and core are supplied by the upstream `mzz2017/v2raya:v2.5.13` image.
+
+## Host proxy
+
+The CN mirror also leaves Supervisor and the Docker daemon unmodified. See the [HAOS host proxy guide](https://github.com/fwerkor/ha-v2raya/blob/main/docs-host-proxy.md).

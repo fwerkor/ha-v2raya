@@ -18,7 +18,8 @@ jobs:
           python-version: '3.12'
       - run: python -m pip install pyyaml
       - run: python tests/validate.py
-      - run: sh -n v2raya/run.sh scripts/install-local-cn.sh
+      - run: python tests/test_host_proxy.py
+      - run: sh -n v2raya/run.sh scripts/install-local-cn.sh scripts/check-host-proxy.sh
 
   build:
     needs: validate
