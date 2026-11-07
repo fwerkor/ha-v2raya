@@ -14,7 +14,7 @@ LABEL io.hass.version="${BUILD_VERSION}" \
       io.hass.type="app" \
       io.hass.arch="${BUILD_ARCH}" \
       org.opencontainers.image.title="v2rayA Home Assistant Add-on" \
-      org.opencontainers.image.source="https://github.com/fwerkor/ha-v2raya-addon"
+      org.opencontainers.image.source="https://github.com/fwerkor/ha-v2raya"
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s \
     CMD wget -q -O /dev/null http://127.0.0.1:2017/ || exit 1
 ENTRYPOINT ["/usr/local/bin/ha-v2raya-start"]

@@ -4,7 +4,7 @@ Run v2rayA on Home Assistant OS and share HTTP/SOCKS5 proxy services on a truste
 
 ## Setup
 
-1. Add `https://github.com/fwerkor/ha-v2raya-addon` in **Settings → Add-ons → Add-on Store → Repositories** (may be labeled *Apps*).
+1. Add `https://github.com/fwerkor/ha-v2raya` in **Settings → Add-ons → Add-on Store → Repositories** (may be labeled *Apps*).
 2. Install and start **v2rayA Proxy**. Open its Web UI or navigate to `http://<HA_IP>:2017`.
 3. Create a strong v2rayA admin password; import a subscription / add a server, select it and press **Start**.
 4. Open v2rayA **Settings**, enable **LAN Sharing**, then restart its proxy connection if needed. Mapping the ports in Home Assistant alone does not enable external proxy listeners.
