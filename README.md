@@ -2,7 +2,7 @@
 
 ## 安装与使用
 
-为 **Home Assistant OS / Supervised** 提供 v2rayA 代理插件，支持 `amd64` 和 `aarch64`。配置保存在 `/data/v2raya`，不修改 HAOS 主机网络。插件使用预构建的 `ghcr.io/fwerkor/ha-v2raya:0.1.1` 镜像，安装时无需在 HAOS 本机从 Docker Hub 构建。
+为 **Home Assistant OS / Supervised** 提供 v2rayA **2.4.0** 代理插件，支持 `amd64` 和 `aarch64`。配置保存在 `/data/v2raya`，不修改 HAOS 主机网络。插件使用预构建的 `ghcr.io/fwerkor/ha-v2raya:0.2.0` 镜像，安装时无需在 HAOS 本机从 Docker Hub 构建。
 
 1. 在 HA **设置 → 加载项 → 加载项商店 → 仓库** 添加 `https://github.com/fwerkor/ha-v2raya`。
 2. 安装并启动 **v2rayA Proxy**，打开 Web UI 或访问 `http://<HA_IP>:2017`，设置管理员密码。
@@ -12,11 +12,13 @@
 
 **安全：** 代理端口默认不要求认证，绝不能向公网转发；建议限制为可信 VLAN / 局域网设备。管理界面需要强密码。该插件不提供透明代理/TUN，不会接管 HAOS 的网络流量。
 
+当前统一使用上游 v2rayA 2.4.0（包括其匹配内核），保留节点的 **AllowInsecure** 选项；默认关闭，只有必须连接无法正确验证证书的节点时才启用。插件版本号已提升至 **0.2.0**，原有插件会显示更新。首次从旧版降级时自动保留 SQLite 数据库快照；建议更新前也备份 Home Assistant。
+
 详细说明：[v2raya/DOCS.md](v2raya/DOCS.md)。项目不隶属于 Home Assistant 或 v2rayA 官方。
 
 ## English
 
-Install the repository `https://github.com/fwerkor/ha-v2raya` in the Home Assistant Add-on Store, start **v2rayA Proxy**, open `http://<HA_IP>:2017`, configure a server and enable **LAN Sharing**. Use SOCKS5 on 20170, HTTP on 20171, or routed HTTP on 20172. Limit access to a trusted LAN: the proxy ports do not have authentication by default. Supports amd64 and aarch64. Installs a prebuilt image from GHCR instead of building locally from Docker Hub.
+Install the repository `https://github.com/fwerkor/ha-v2raya` in the Home Assistant Add-on Store, start **v2rayA Proxy**, open `http://<HA_IP>:2017`, configure a server and enable **LAN Sharing**. Use SOCKS5 on 20170, HTTP on 20171, or routed HTTP on 20172. Limit access to a trusted LAN: the proxy ports do not have authentication by default. Uses upstream v2rayA/v2raya_core 2.4.0 with the per-node AllowInsecure option (off by default). App version 0.2.0. Supports amd64 and aarch64. Installs a prebuilt image from GHCR instead of building locally from Docker Hub.
 
 App artwork: original v2rayA icon from [v2rayA upstream](https://github.com/v2rayA/v2rayA/blob/main/gui/public/static/v2raya-icon.svg), rasterized for Home Assistant.
 
@@ -32,9 +34,9 @@ curl -fL --retry 2 --connect-timeout 5 -o /tmp/ha-v2raya-install.sh \
 sh /tmp/ha-v2raya-install.sh
 ```
 
-脚本自动检查官方 GHCR 和 CN 镜像站，校验 **v0.1.1 OCI index SHA-256** 以及 amd64/arm64 架构；然后从 jsDelivr、Fastly、JSDMirror、GitHub Raw 依次获取加载项文件，生成本地加载项。任何来源都失败时中止，不会继续使用错误的镜像。安装后在商店的本地应用（Local apps）中选择 **v2rayA Proxy (CN Mirror)**。如果要强制选国内镜像站，运行 `HA_V2RAYA_REGISTRY=cn sh /tmp/ha-v2raya-install.sh`。
+脚本自动检查官方 GHCR 和 CN 镜像站，校验 **v0.2.0 OCI index SHA-256** 以及 amd64/arm64 架构；然后从 jsDelivr、Fastly、JSDMirror、GitHub Raw 依次获取加载项文件，生成本地加载项。任何来源都失败时中止，不会继续使用错误的镜像。安装后在商店的本地应用（Local apps）中选择 **v2rayA Proxy (CN Mirror)**。如果要强制选国内镜像站，运行 `HA_V2RAYA_REGISTRY=cn sh /tmp/ha-v2raya-install.sh`。
 
-这个切换发生在安装脚本执行阶段；**Home Assistant Supervisor 本身不会在镜像拉取失败后自动换站**。不要同时安装两个变体（端口冲突）。v0.1.1 校验值是固定的，以后升级版本须更新脚本的校验值。
+这个切换发生在安装脚本执行阶段；**Home Assistant Supervisor 本身不会在镜像拉取失败后自动换站**。不要同时安装两个变体（端口冲突）。v0.2.0 校验值是固定的，以后升级版本须更新脚本的校验值。
 
 ## HAOS 本机使用代理
 

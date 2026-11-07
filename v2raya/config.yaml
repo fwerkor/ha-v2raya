@@ -1,8 +1,8 @@
 name: v2rayA Proxy
-version: "0.1.1"
+version: "0.2.0"
 slug: v2raya_proxy
 image: ghcr.io/fwerkor/ha-v2raya
-description: v2rayA proxy client with LAN-accessible SOCKS5 and HTTP ports
+description: v2rayA 2.4.0 with AllowInsecure and LAN HTTP/SOCKS5 proxies
 url: https://github.com/fwerkor/ha-v2raya
 arch:
   - amd64

@@ -8,7 +8,7 @@ repo = yaml.safe_load((root / "repository.yaml").read_text())
 addon = yaml.safe_load((root / "v2raya/config.yaml").read_text())
 assert repo["url"] == "https://github.com/fwerkor/ha-v2raya"
 assert addon["slug"] == "v2raya_proxy"
-assert addon["version"] == "0.1.1"
+assert addon["version"] == "0.2.0"
 assert addon["image"] == "ghcr.io/fwerkor/ha-v2raya"
 assert set(addon["arch"]) == {"amd64", "aarch64"}
 assert addon["init"] is False

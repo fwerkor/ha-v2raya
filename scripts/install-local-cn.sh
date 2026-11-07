@@ -3,8 +3,8 @@
 # Does not change HAOS firewall, Docker configuration, or global networking.
 set -eu
 
-VERSION=0.1.1
-INDEX_SHA256=db0e6260267759de382d7222c4b285b2659091d9ae69e6ff5e79836f9241239e
+VERSION=0.2.0
+INDEX_SHA256=0000000000000000000000000000000000000000000000000000000000000000
 PATH_IN_REPO=v2raya_cn
 TARGET_NAME=v2raya_cn
 CURL=${CURL:-curl}
@@ -27,7 +27,10 @@ if [ -z "$APP_DIR" ]; then
   done
 fi
 [ -n "$APP_DIR" ] && [ -d "$APP_DIR" ] && [ -w "$APP_DIR" ] || fail 'No writable Home Assistant local apps folder. Mount /local_apps (or legacy /addons), or set HA_LOCAL_APPS_DIR.'
-[ ! -e "$APP_DIR/$TARGET_NAME" ] || fail "Already exists: $APP_DIR/$TARGET_NAME. No files were overwritten."
+if [ -e "$APP_DIR/$TARGET_NAME" ]; then
+  [ -f "$APP_DIR/$TARGET_NAME/config.yaml" ] || fail 'Existing app directory has no config.yaml; refusing overwrite.'
+  grep -Eq '^slug:[[:space:]]*v2raya_proxy_cn' "$APP_DIR/$TARGET_NAME/config.yaml" || fail 'Existing local app has a different slug; refusing overwrite.'
+fi
 
 TMP=$(mktemp -d)
 APP_STAGE=''
@@ -67,7 +70,7 @@ fi
 if [ -z "$SELECTED" ] && [ "$REGISTRY_CHOICE" != official ] && check_registry ghcr.dockerproxy.net; then
   SELECTED=ghcr.dockerproxy.net
 fi
-[ -n "$SELECTED" ] || fail 'Neither allowed image registry serves the expected v0.1.1 multiarch digest. No installation was attempted.'
+[ -n "$SELECTED" ] || fail 'Neither allowed image registry serves the expected v0.2.0 multiarch digest. No installation was attempted.'
 info "Selected image registry: $SELECTED (verified SHA256:$INDEX_SHA256)"
 
 
@@ -76,9 +79,9 @@ verify_file() {
   filename=$1
   expected=''
   case "$filename" in
-    config.yaml) expected=6b69d051d2a28b0973bc406eb01472319bec284b97ec0b12fde92189d131aa7b ;;
-    DOCS.md) expected=47354236bdc7b22586b337a0edda1a20df671d93fbf882d4744eae17b96710e0 ;;
-    CHANGELOG.md) expected=7a8fff297148589ce236010564a9c7c84d6906a03ed6e37091088dd674bd782e ;;
+    config.yaml) expected=25ed662781798300afa35b2368cd108ef5140cdfc534cba941b89492fef06079 ;;
+    DOCS.md) expected=ed57f2206a48107d5a2525d67e2098cb035bfa0075c690bc0f3b4f105e127dea ;;
+    CHANGELOG.md) expected=ffc47fa6b66b90f9db9725eddca8fcee682f664a7f3504c121febedc5bf3dbf2 ;;
     icon.png) expected=34d2e206be831112f32381658174724b89f909e7152f59c1d49b0bd73a18c79b ;;
     logo.png) expected=1674324267b8b0d1707f4c94eeca565a8b07c09d30ef18d55a4b8234b84b037c ;;
     *) return 1 ;;
@@ -97,7 +100,7 @@ fetch_source() {
     [ -s "$TMP/source/$file" ] || return 1
     verify_file "$file" || return 1
   done
-  grep -Eq '^version:[[:space:]]*"0\.1\.1"' "$TMP/source/config.yaml" || return 1
+  grep -Eq '^version:[[:space:]]*"0\.2\.0"' "$TMP/source/config.yaml" || return 1
   grep -Eq '^slug:[[:space:]]*v2raya_proxy_cn' "$TMP/source/config.yaml" || return 1
   grep -Fx 'image: ghcr.dockerproxy.net/fwerkor/ha-v2raya' "$TMP/source/config.yaml" >/dev/null || return 1
   # Standard PNG signatures: no HTML error pages or stale placeholders.
@@ -128,9 +131,20 @@ mv "$TMP/source/config-selected.yaml" "$TMP/source/config.yaml"
 # Local store path. The existing GitHub-store variant is untouched.
 APP_STAGE=$(mktemp -d "$APP_DIR/.ha-v2raya-cn.XXXXXX")
 for file in $FILES; do cp "$TMP/source/$file" "$APP_STAGE/$file"; done
-mv "$APP_STAGE" "$APP_DIR/$TARGET_NAME"
+if [ -d "$APP_DIR/$TARGET_NAME" ]; then
+  backup_dir=$(mktemp -d "$APP_DIR/.ha-v2raya-backup.XXXXXX")
+  rmdir "$backup_dir"
+  mv "$APP_DIR/$TARGET_NAME" "$backup_dir"
+  if ! mv "$APP_STAGE" "$APP_DIR/$TARGET_NAME"; then
+    mv "$backup_dir" "$APP_DIR/$TARGET_NAME" || true
+    fail 'Unable to install updated local app; previous app definition restored.'
+  fi
+  rm -rf "$backup_dir"
+else
+  mv "$APP_STAGE" "$APP_DIR/$TARGET_NAME"
+fi
 APP_STAGE=''
-info "Installed app definition in $APP_DIR/$TARGET_NAME"
+info "Installed or updated app definition in $APP_DIR/$TARGET_NAME"
 
 if command -v ha >/dev/null 2>&1; then
   if ha store reload; then

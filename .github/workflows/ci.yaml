@@ -36,7 +36,7 @@ jobs:
           context: ./v2raya
           push: false
           platforms: ${{ matrix.platform }}
-          build-args: BUILD_VERSION=0.1.1
+          build-args: BUILD_VERSION=0.2.0
           tags: ha-v2raya:test
 
   smoke:
@@ -44,9 +44,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: docker build -t ha-v2raya:smoke ./v2raya
+      - run: docker build --build-arg TARGETARCH=amd64 -t ha-v2raya:smoke ./v2raya
       - run: |
           set -eu
+          test "$(docker run --rm --entrypoint /usr/bin/v2raya ha-v2raya:smoke --version)" = '2.4.0'
+          docker run --rm --entrypoint /usr/bin/v2raya_core ha-v2raya:smoke version | grep -F 'V2RAYA_CORE 2.4.0'
           docker run -d --name ha-v2raya-test -p 127.0.0.1:12017:2017 ha-v2raya:smoke
           for i in $(seq 1 45); do
             if curl -fsS -o /dev/null http://127.0.0.1:12017/; then exit 0; fi
@@ -59,7 +61,7 @@ jobs:
 
   publish:
     # Keep released image tags immutable; invoke publication only for a new version.
-    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'workflow_dispatch' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release/v2raya-2.4.0')
     needs: [validate, build, smoke]
     runs-on: ubuntu-latest
     permissions:
@@ -80,5 +82,5 @@ jobs:
           context: ./v2raya
           platforms: linux/amd64,linux/arm64
           push: true
-          build-args: BUILD_VERSION=0.1.1
-          tags: ghcr.io/fwerkor/ha-v2raya:0.1.1
+          build-args: BUILD_VERSION=0.2.0
+          tags: ghcr.io/fwerkor/ha-v2raya:0.2.0

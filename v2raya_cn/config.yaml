@@ -1,8 +1,8 @@
 name: v2rayA Proxy (CN Mirror)
-version: "0.1.1"
+version: "0.2.0"
 slug: v2raya_proxy_cn
 image: ghcr.dockerproxy.net/fwerkor/ha-v2raya
-description: v2rayA LAN proxy using a mirror for networks where GHCR is unavailable
+description: v2rayA 2.4.0 with AllowInsecure and CN mirror support
 url: https://github.com/fwerkor/ha-v2raya
 arch:
   - amd64
